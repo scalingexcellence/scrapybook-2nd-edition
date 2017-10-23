@@ -13,7 +13,7 @@ from twisted.internet.task import deferLater
 from twisted.web.resource import Resource
 from twisted.web.util import redirectTo
 from twisted.web.server import Session
-from twisted.internet import reactor
+from twisted.internet import reactor, endpoints
 from twisted.web.static import File
 from twisted.web import server
 
@@ -39,7 +39,7 @@ class SettingsFromUrl(object):
 
     def __init__(self, request):
         parts = request.URLPath().pathList(unquote=True)
-        k_v_pairs = map(lambda i: i.split(":"), parts)
+        k_v_pairs = map(lambda i: i.decode().split(":"), parts)
         vars = filter(lambda i: len(i) == 2, k_v_pairs)
         mapped = SettingsFromUrl.url_to_settings
         self._settings = {}
@@ -74,7 +74,7 @@ class BaseResource(Resource):
 
 def get_if(request, k, default, cls):
     try:
-        return cls(request.args[k][0])
+        return cls(request.args[k.encode('utf-8')][0].decode())
     except:
         return default
 
@@ -86,7 +86,8 @@ class Api(BaseResource):
 
     def _delayedRender(self, request, settings):
         text = get_if(request, 'text', '', str)
-        request.write(json.dumps({"translation": "api-t-%s" % "".join(text)}))
+        json = json.dumps({"translation": "api-t-{}".format("".join(text))})
+        request.write(json.encode('utf-8'))
         request.finish()
 
 
@@ -110,21 +111,22 @@ class Index(BaseResource):
 
         if p >= 1 and p <= max_pages:
             base = (p-1) * details_per_index
-            request.write('<ul>')
-            for i in xrange(details_per_index):
+            request.write(b'<ul>')
+            for i in range(details_per_index):
                 id = ((base+i)*items_per_page)+1
                 if id <= limit:
                     ids = [id, min(id + items_per_page - 1, limit)]
                     irange = sorted(list(set(ids)))
                     srange = "-".join([str(i) for i in irange])
-                    request.write('<li><a class="item" href="detail'
+                    request.write(('<li><a class="item" href="detail'
                                   '?id0=%d">item %s</a></li>' % (id, srange))
+                                  .encode('utf-8'))
 
-            request.write('</ul>')
+            request.write(b'</ul>')
 
-            for i in xrange(index_lookahead):
+            for i in range(index_lookahead):
                 if (p+i) < max_pages:
-                    request.write('<a class="nav" href="index?p=%d">next</a> '
+                    request.write(b'<a class="nav" href="index?p=%d">next</a> '
                                   % (p+i+1))
 
         request.finish()
@@ -141,37 +143,27 @@ class Detail(BaseResource):
         garbage_size = settings.getint('SPEED_DETAIL_EXTRA_SIZE', 0)
 
         id0 = get_if(request, 'id0', 1, int)
-        request.write('<ul>')
-        for idx in xrange(id0, min(id0+items_per_page, limit+1)):
-            request.write('<li>')
-            request.write('<h3>I\'m %d</h3>' % idx)
-            request.write('<div class="info">useful info for id: %d</div>'
+        request.write(b'<ul>')
+        for idx in range(id0, min(id0+items_per_page, limit+1)):
+            request.write(b'<li>')
+            request.write(b'<h3>I\'m %d</h3>' % idx)
+            request.write(b'<div class="info">useful info for id: %d</div>'
                           % idx)
-            request.write('</li>')
-        request.write('</ul>')
-        request.write('<!--')
-        request.write("i" * garbage_size)
-        request.write('-->')
+            request.write(b'</li>')
+        request.write(b'</ul>')
+        request.write(b'<!--')
+        request.write(b'i' * garbage_size)
+        request.write(b'-->')
         request.finish()
 
 
 class Benchmark(Resource):
-
-    def __init__(self):
-        Resource.__init__(self)
-
-        self.putChild("api", Api())
-        self.putChild("index", Index())
-        self.putChild("detail", Detail())
-
-    def getChild(self, name, request):
-        return self
-
+    isLeaf = True
     def render_GET(self, request):
         return ('Benchmark section. Browse: '
                 '<a href="index">index</a> '
                 '<a href="detail">detail</a>, '
-                '<a href="api?text=hi">api</a>')
+                '<a href="api?text=hi">api</a>').encode('utf-8')
 
 
 class ILoginGate(Interface):
@@ -203,13 +195,13 @@ class Dynamic(Resource):
         tsession = ILoginGate(session)
 
         try:
-            if request.path == "/dynamic":
+            if request.path == b"/dynamic":
                 return View.render_form()
-            elif request.path == "/dynamic/nonce":
+            elif request.path == b"/dynamic/nonce":
                 return View.render_form(tsession.nonce)
-            elif request.path == "/dynamic/gated":
+            elif request.path == b"/dynamic/gated":
                 if not tsession.logged_in:
-                    return redirectTo("/dynamic/error", request)
+                    return redirectTo(b"/dynamic/error", request)
 
                 return View.render_gated()
         except:
@@ -221,27 +213,27 @@ class Dynamic(Resource):
     def render_POST(self, request):
         session = request.getSession()
         tsession = ILoginGate(session)
-        location = "/dynamic/error"
+        location = b"/dynamic/error"
 
         try:
-            if request.path not in ["/dynamic/nonce-login", "/dynamic/login"]:
-                raise Exception('unsupported login type')
+            if request.path not in [b"/dynamic/nonce-login", b"/dynamic/login"]:
+                raise Exception(b'unsupported login type')
 
-            if request.path == "/dynamic/nonce-login":
+            if request.path == b"/dynamic/nonce-login":
                 nonce = request.args.get('nonce', [''])[0]
 
                 if tsession.nonce != nonce:
                     session.expire()
-                    raise Exception('invalid nonce')
+                    raise Exception(b'invalid nonce')
 
-            if (request.args.get('user', [''])[0] != 'user' or
-                    request.args.get('pass', [''])[0] != 'pass'):
+            if (request.args.get(b'user', [''])[0] != b'user' or
+                    request.args.get(b'pass', [''])[0] != b'pass'):
                 if session:
                     session.expire()
                 raise Exception('invalid user/pass')
 
             tsession.logged_in = True
-            location = "/dynamic/gated"
+            location = b"/dynamic/gated"
 
         except:
             pass
@@ -289,30 +281,31 @@ class Properties(BaseResource):
 
     def _delayedRender(self, request, settings):
         try:
+            path = request.path.decode()
             properties, per_index = self.properties, self.per_index
-
-            if request.path == "/properties/api.json":
+            if path == '/properties/api.json':
                 items = []
-                for i in xrange(30):
+                for i in range(30):
                     item = self.model.get_item(i)
                     items.append({'id': i, "title": "better " + item['title']})
 
                 request.setHeader("content-type", "application/json")
-                request.write(json.dumps(items))
+                request.write(json.dumps(items).encode('utf-8'))
 
-            elif request.path.startswith("/properties/index_"):
-                m = re.search(r'.*_(\d+)', request.path)
+            elif path.startswith("/properties/index_"):
+
+                m = re.search(r'.*_(\d+)', path)
                 if not m:
-                    raise Exception('expected number')
+                    raise Exception(b'expected number')
 
                 page = int(m.group(1))
 
                 # Divide with roundup
-                indices = (properties + per_index - 1) / per_index
+                indices = (properties + per_index - 1) // per_index
                 if page >= indices:
-                    raise Exception('invalid index number')
+                    raise Exception(b'invalid index number')
 
-                np = "index_%05d.html" % (page+1)
+                np = 'index_%05d.html' % (page + 1)
 
                 start = per_index * page
                 end = min(per_index * (page + 1), properties)
@@ -320,63 +313,70 @@ class Properties(BaseResource):
                 index = {
                     'page': page,
                     'nextp': None if page >= (indices-1) else np,
-                    'items': self.model.get_items(xrange(start, end))
+                    'items': self.model.get_items(range(start, end))
                 }
 
                 request.write(View.render_index(index))
 
-            elif request.path.startswith("/properties/property_"):
-                m = re.search(r'.*_(\d+)', request.path)
+            elif path.startswith('/properties/property_'):
+                m = re.search(r'.*_(\d+)', path)
                 if not m:
-                    raise Exception('expected number')
+                    raise Exception(b'expected number')
 
                 pid = int(m.group(1))
 
                 if pid >= properties:
-                    raise Exception('invalid property number')
+                    raise Exception(b'invalid property number')
 
                 item = self.model.get_item(pid)
 
                 request.write(View.render_property(item))
             else:
-                raise Exception('unknown page')
+                raise Exception(b'unknown page')
 
         except:
-            request.write('can\'t find page. sorry')
+            request.write(b'can\'t find page. sorry')
 
         request.finish()
 
 
-class Root(Resource):
-    def __init__(self):
-        Resource.__init__(self)
-        self.model = Model()
-        self.putChild("benchmark", Benchmark())
-        self.putChild("properties", Properties(self.model))
-        self.putChild("maps", Maps(self.model))
-        self.putChild("images", File('images'))
-        self.putChild("static", File('static'))
-        self.putChild("dynamic", Dynamic())
-
-    def getChild(self, name, request):
-        return self
+class Home(Resource):
+    isLeaf = True
 
     def render_GET(self, request):
-        return ('Welcome to Scrapy Book. Try: '
+        r = ('Welcome to Scrapy Book. Try: '
                 '<a href="properties/index_00000.html">properties</a> '
                 '<a href="images">images</a>, '
                 '<a href="dynamic">dynamic</a>, '
                 '<a href="benchmark/">benchmark</a> '
-                '<a href="maps/api/geocode/json?sensor=false&address=Camden%20Town%2C%20London">maps</a> ')
+                '<a href="maps/api/geocode/json?sensor=false&address=Camden%20Town%2C%20London">maps</a>')
+        return r.encode('utf-8')
 
 if __name__ == '__main__':
 
     path = os.path.dirname(os.path.abspath(__file__))
 
     os.chdir(path)
+    
+    root = Resource()
 
-    site = server.Site(Root())
+    root.model = Model()
+    root.putChild(b'', Home())
+    benchmark = Resource()
+    root.putChild(b'benchmark', benchmark)
+    benchmark.putChild(b'', Benchmark())
+    benchmark.putChild(b'api', Api())
+    benchmark.putChild(b'index', Index())
+    benchmark.putChild(b'detail', Detail())
+    root.putChild(b'properties', Properties(root.model))
+    root.putChild(b'maps', Maps(root.model))
+    root.putChild(b'images', File('images'))
+    root.putChild(b'static', File('static'))
+    root.putChild(b'dynamic', Dynamic())
 
-    reactor.listenTCP(9312, site)
+    factory = server.Site(root)
+
+    endpoint = endpoints.TCP4ServerEndpoint(reactor, 9312)
+    endpoint.listen(factory)
 
     reactor.run()

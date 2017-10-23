@@ -18,7 +18,7 @@ class Model(object):
         self._locations = []
         self._location_index = {}
         for i in locations:
-            loc = i["location"].encode("utf8")
+            loc = i["location"]
             i["location"] = loc
             self._locations.append(loc)
             self._location_index[loc] = i
@@ -28,10 +28,11 @@ class Model(object):
 
     def get_items(self, ids):
         for i in ids:
-            gen = Generator(i+1)  # Avoid 0
+            gen = Generator(i + 1)  # Avoid 0
 
             gen.rand(35) # The first draw isn't very random - so skip it
             title = gen.create_sentence(self._titles)
+
             description = gen.create_paragraph(self._descriptions)
             price = str(gen.rand_price(title, self._title_weights))
             image = "../images/i%02d.jpg" % gen.rand(17)
@@ -52,7 +53,7 @@ class Model(object):
     @staticmethod
     def from_file(file):
         with open(file, 'r') as f:
-            return filter(None, [line.strip() for line in f])
+            return list(filter(None, [line.strip() for line in f]))
 
     @staticmethod
     def from_json_file(file):
@@ -69,12 +70,12 @@ class Generator(object):
     def create_paragraph(self, options):
         num_lines = self.rand(4) + 1
         return "\r\n".join(
-            [self.create_sentence(options) for i in xrange(num_lines)]
+            [self.create_sentence(options) for i in range(num_lines)]
         )
 
     def create_sentence(self, options):
         num_words = self.rand(7) + 3
-        return " ".join([self.choice(options) for i in xrange(0, num_words)])
+        return " ".join(self.choice(options) for i in range(0, num_words))
 
     def choice(self, options):
         return options[self.rand(len(options))]
@@ -130,7 +131,7 @@ class TestModel(unittest.TestCase):
         self.assertEqual(expected, self.model.get_item(323))
 
     def test_bulk_crate(self):
-        items = self.model.get_items(xrange(3))
+        items = self.model.get_items(range(3))
         self.assertTrue(isinstance(items, types.GeneratorType))
         self.assertEqual('property_000000.html', next(items)['link'])
         self.assertEqual('property_000001.html', next(items)['link'])

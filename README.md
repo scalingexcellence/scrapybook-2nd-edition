@@ -30,7 +30,7 @@ virtualenv -p python3 --no-site-packages --distribute .env && \
 
 4. Then you start the web server with the examples for the book by doing:
 ```
-start.sh &
+./start.sh &
 ```
 
 5. Then you can `cd` to individual chapters and run the code as described in the book.

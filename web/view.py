@@ -14,7 +14,7 @@ class View(object):
             target = '/dynamic/login'
             nonce = ''
 
-        return """
+        return ("""
 <!DOCTYPE html>
 <head>
 <meta charset="utf-8">
@@ -30,19 +30,19 @@ class View(object):
 </form>
 </body>
 </html>
-""" % (target, nonce)
+""" % (target, nonce)).encode('utf-8')
 
     @staticmethod
     def render_error():
-        return """
+        return ("""
 <!DOCTYPE html><head><meta charset="utf-8">
 <title>Error</title></head><body><h1>Page not found</h1>
 <p>Return to <a href="/dynamic">login</a>
-</body></html>"""
+</body></html>""").encode('utf-8')
 
     @staticmethod
     def render_gated():
-        return """
+        return ("""
 <!DOCTYPE html>
 <head>
 <meta charset="utf-8">
@@ -57,7 +57,7 @@ class View(object):
 </ul>
 </body>
 </html>
-"""
+""").encode('utf-8')
 
     @staticmethod
     def render_index(idx):
@@ -109,11 +109,11 @@ a {text-decoration:none;}
 
         parts.append("""</body></html>""")
 
-        return ''.join(parts)
+        return (''.join(parts)).encode('utf-8')
 
     @staticmethod
     def render_property(item):
-        return """
+        return ("""
 <!DOCTYPE html>
 <html>
 <head>
@@ -135,14 +135,14 @@ a {text-decoration:none;}
             item['description'],
             item['image'],
             item['address']
-            )
+            )).encode('utf-8')
 
     @staticmethod
     def render_maps(location):
         if location:
-            return """
+            return ("""
 {"status": "OK", "results": [
  {"geometry": {"location": {"lat": %f, "lng": %f}}}
-]}""" % (location['lat'], location['lng'])
+]}""" % (location['lat'], location['lng'])).encode('utf-8')
         else:
-            return """{"status": "ZERO_RESULTS"}"""
+            return ("""{"status": "ZERO_RESULTS"}""").encode('utf-8')
