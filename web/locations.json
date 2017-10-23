@@ -1,0 +1,177 @@
+[
+    {
+        "lat": 51.54327, 
+        "lng": -0.00187, 
+        "location": "Stratford, London"
+    }, 
+    {
+        "lat": 51.5072682, 
+        "lng": -0.1657303, 
+        "location": "Hyde Park, London"
+    }, 
+    {
+        "lat": 51.5465063, 
+        "lng": -0.1058058, 
+        "location": "Islington, London"
+    }, 
+    {
+        "lat": 51.5054306, 
+        "lng": -0.0235333, 
+        "location": "Canary Wharf, London"
+    }, 
+    {
+        "lat": 51.55179529999999, 
+        "lng": -0.0646437, 
+        "location": "Hackney, London"
+    }, 
+    {
+        "lat": 51.5390111, 
+        "lng": -0.1425553, 
+        "location": "Camden Town, London"
+    }, 
+    {
+        "lat": 51.52026069999999, 
+        "lng": -0.0293396, 
+        "location": "Tower Hamlets, London"
+    }, 
+    {
+        "lat": 51.5139486, 
+        "lng": -0.0707284, 
+        "location": "Whitechapel, London"
+    }, 
+    {
+        "lat": 51.5134339, 
+        "lng": -0.183801, 
+        "location": "Bayswater, London"
+    }, 
+    {
+        "lat": 51.4911875, 
+        "lng": -0.2237315, 
+        "location": "Hammersmith, London"
+    }, 
+    {
+        "lat": 51.46390239999999, 
+        "lng": -0.1677415, 
+        "location": "Battersea, London"
+    }, 
+    {
+        "lat": 51.41833889999999, 
+        "lng": -0.2206288, 
+        "location": "Wimbledon, London"
+    }, 
+    {
+        "lat": 51.5269736, 
+        "lng": -0.0667204, 
+        "location": "Bethnal Green, London"
+    }, 
+    {
+        "lat": 51.526806, 
+        "lng": -0.039713, 
+        "location": "Mile End, London"
+    }, 
+    {
+        "lat": 51.464108, 
+        "lng": -0.1594381, 
+        "location": "Seven Sisters, London"
+    }, 
+    {
+        "lat": 51.504746, 
+        "lng": -0.22305, 
+        "location": "Shepherds Bush, London"
+    }, 
+    {
+        "lat": 51.547358, 
+        "lng": -0.190436, 
+        "location": "West Hampstead, London"
+    }, 
+    {
+        "lat": 51.550501, 
+        "lng": -0.3048409, 
+        "location": "Wembley, London"
+    }, 
+    {
+        "lat": 51.5498969, 
+        "lng": -0.0980629, 
+        "location": "Highbury, London"
+    }, 
+    {
+        "lat": 51.4876272, 
+        "lng": -0.2671732, 
+        "location": "Chiswick, London"
+    }, 
+    {
+        "lat": 51.5309004, 
+        "lng": -0.1225611, 
+        "location": "Kings Cross, London"
+    }, 
+    {
+        "lat": 51.494938, 
+        "lng": -0.098566, 
+        "location": "Elephant And Castle, London"
+    }, 
+    {
+        "lat": 51.49319000000001, 
+        "lng": -0.04749, 
+        "location": "Surrey Quays, London"
+    }, 
+    {
+        "lat": 51.48257659999999, 
+        "lng": -0.0076589, 
+        "location": "Greenwich, London"
+    }, 
+    {
+        "lat": 51.5010095, 
+        "lng": -0.1932794, 
+        "location": "Kensington, London"
+    }, 
+    {
+        "lat": 51.4700223, 
+        "lng": -0.4542955, 
+        "location": "Heathrow, London"
+    }, 
+    {
+        "lat": 51.55170589999999, 
+        "lng": -0.1588255, 
+        "location": "Camden, London"
+    }, 
+    {
+        "lat": 51.52849, 
+        "lng": -0.084728, 
+        "location": "Shoreditch, London"
+    }, 
+    {
+        "lat": 51.5344031, 
+        "lng": -0.1062298, 
+        "location": "Angel, London"
+    }, 
+    {
+        "lat": 51.4612794, 
+        "lng": -0.1156148, 
+        "location": "Brixton, London"
+    }, 
+    {
+        "lat": 51.376165, 
+        "lng": -0.098234, 
+        "location": "Croydon, London"
+    }, 
+    {
+        "lat": 51.4941501, 
+        "lng": -0.1746853, 
+        "location": "South Kensington, London"
+    }, 
+    {
+        "lat": 51.5110287, 
+        "lng": -0.205389, 
+        "location": "Notting Hill, London"
+    }, 
+    {
+        "lat": 51.485093, 
+        "lng": -0.174936, 
+        "location": "Chelsea, London"
+    }, 
+    {
+        "lat": 51.5054564, 
+        "lng": -0.07535649999999999, 
+        "location": "Tower Bridge, London"
+    }
+]
