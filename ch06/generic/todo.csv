@@ -1,0 +1,1 @@
+url,name,pricehttp://localhost:9312/static/a.html,"//*[@id=""itemTitle""]/text()","//*[@id=""prcIsum""]/text()"http://localhost:9312/static/b.html,//h1/text(),//span/strong/text()http://localhost:9312/static/c.html,"//*[@id=""product-desc""]/span/text()",

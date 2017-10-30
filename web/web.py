@@ -220,8 +220,7 @@ class Dynamic(Resource):
                 raise Exception(b'unsupported login type')
 
             if request.path == b"/dynamic/nonce-login":
-                nonce = request.args.get('nonce', [''])[0]
-
+                nonce = request.args.get(b'nonce', [''])[0].decode()
                 if tsession.nonce != nonce:
                     session.expire()
                     raise Exception(b'invalid nonce')
