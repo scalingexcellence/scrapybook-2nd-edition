@@ -1,16 +1,16 @@
 import datetime
 import socket
-import scrapy
 
 from scrapy.loader.processors import MapCompose, Join
+from scrapy.linkextractors import LinkExtractor
+from scrapy.spiders import CrawlSpider, Rule
 from scrapy.loader import ItemLoader
-from scrapy.http import Request
 
 from properties.items import PropertiesItem
 
 
-class BasicSpider(scrapy.Spider):
-    name = "manual"
+class ToMobileSpider(CrawlSpider):
+    name = 'tomobile'
     allowed_domains = ["scrapybook.s3.amazonaws.com"]
 
     # Start on the first index page
@@ -18,22 +18,17 @@ class BasicSpider(scrapy.Spider):
         'http://scrapybook.s3.amazonaws.com/properties/index_00000.html',
     )
 
-    def parse(self, response):
-        # Get the next index URLs and yield Requests
-        next_selector = response.xpath('//*[contains(@class,"next")]//@href')
-        for url in next_selector.extract():
-            yield Request(response.urljoin(url))
-
-        # Get item URLs and yield Requests
-        item_selector = response.xpath('//*[@itemprop="url"]/@href')
-        for url in item_selector.extract():
-            yield Request(response.urljoin(url),
-                          callback=self.parse_item)
+    # Rules for horizontal and vertical crawling
+    rules = (
+        Rule(LinkExtractor(restrict_xpaths='//*[contains(@class,"next")]')),
+        Rule(LinkExtractor(restrict_xpaths='//*[@itemprop="url"]'),
+             callback='parse_item')
+    )
 
     def parse_item(self, response):
         """ This function parses a property page.
 
-        @url http://scrapybook.s3.amazonaws.com:9312/properties/property_000000.html
+        @url http://scrapybook.s3.amazonaws.com/properties/property_000000.html
         @returns items 1
         @scrapes title price description address image_urls
         @scrapes url project spider server date
@@ -53,8 +48,9 @@ class BasicSpider(scrapy.Spider):
         l.add_xpath('address',
                     '//*[@itemtype="http://schema.org/Place"][1]/text()',
                     MapCompose(str.strip))
+        make_url = lambda i: response.urljoin(i)
         l.add_xpath('image_urls', '//*[@itemprop="image"][1]/@src',
-                    MapCompose(lambda i: response.urljoin(i)))
+                    MapCompose(make_url))
 
         # Housekeeping fields
         l.add_value('url', response.url)

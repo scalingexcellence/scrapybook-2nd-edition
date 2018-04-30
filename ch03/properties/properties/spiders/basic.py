@@ -10,17 +10,17 @@ from properties.items import PropertiesItem
 
 class BasicSpider(scrapy.Spider):
     name = "basic"
-    allowed_domains = ["localhost"]
+    allowed_domains = ["scrapybook.s3.amazonaws.com"]
 
-    # Start on a property page
+    # Start on the first index page
     start_urls = (
-        'http://localhost:9312/properties/property_000000.html',
+        'http://scrapybook.s3.amazonaws.com/properties/property_000000.html',
     )
 
     def parse(self, response):
         """ This function parses a property page.
 
-        @url http://localhost:9312/properties/property_000000.html
+        @url http://scrapybook.s3.amazonaws.com:9312/properties/property_000000.html
         @returns items 1
         @scrapes title price description address image_urls
         @scrapes url project spider server date

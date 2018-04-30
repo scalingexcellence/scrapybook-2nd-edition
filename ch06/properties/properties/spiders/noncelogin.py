@@ -12,13 +12,14 @@ from properties.items import PropertiesItem
 
 class NonceLoginSpider(CrawlSpider):
     name = 'noncelogin'
-    allowed_domains = ["localhost"]
+    allowed_domains = ["scrapybook.s3.amazonaws.com",
+                       "examples.scrapybook.com"]
 
     # Start on the welcome page
     def start_requests(self):
         return [
             Request(
-                "http://localhost:9312/dynamic/nonce",
+                "http://examples.scrapybook.com/post/nonce.php",
                 callback=self.parse_welcome)
         ]
 
@@ -39,7 +40,7 @@ class NonceLoginSpider(CrawlSpider):
     def parse_item(self, response):
         """ This function parses a property page.
 
-        @url http://localhost:9312/properties/property_000000.html
+        @url http://scrapybook.s3.amazonaws.com/properties/property_000000.html
         @returns items 1
         @scrapes title price description address image_urls
         @scrapes url project spider server date

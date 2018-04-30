@@ -1,34 +1,28 @@
 import datetime
 import socket
-import scrapy
 
 from scrapy.loader.processors import MapCompose, Join
+from scrapy.linkextractors import LinkExtractor
+from scrapy.spiders import CrawlSpider, Rule
 from scrapy.loader import ItemLoader
-from scrapy.http import Request
 
 from properties.items import PropertiesItem
 
 
-class BasicSpider(scrapy.Spider):
-    name = "manual"
+class EasySpider(CrawlSpider):
+    name = 'distr'
     allowed_domains = ["scrapybook.s3.amazonaws.com"]
 
     # Start on the first index page
-    start_urls = (
-        'http://scrapybook.s3.amazonaws.com/properties/index_00000.html',
+    start_urls = ['http://scrapybook.s3.amazonaws.com/properties/index_%05d.html' % id
+                  for id in map(lambda x: 1667 * x / 20, range(20))]
+
+    # Rules for horizontal and vertical crawling
+    rules = (
+        Rule(LinkExtractor(restrict_xpaths='//*[contains(@class,"next")]')),
+        Rule(LinkExtractor(restrict_xpaths='//*[@itemprop="url"]'),
+        callback='parse_item')
     )
-
-    def parse(self, response):
-        # Get the next index URLs and yield Requests
-        next_selector = response.xpath('//*[contains(@class,"next")]//@href')
-        for url in next_selector.extract():
-            yield Request(response.urljoin(url))
-
-        # Get item URLs and yield Requests
-        item_selector = response.xpath('//*[@itemprop="url"]/@href')
-        for url in item_selector.extract():
-            yield Request(response.urljoin(url),
-                          callback=self.parse_item)
 
     def parse_item(self, response):
         """ This function parses a property page.

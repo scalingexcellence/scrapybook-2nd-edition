@@ -12,17 +12,17 @@ from properties.items import PropertiesItem
 
 class ApiSpider(scrapy.Spider):
     name = 'api'
-    allowed_domains = ["localhost"]
+    allowed_domains = ["scrapybook.s3.amazonaws.com"]
 
     # Start on the first index page
     start_urls = (
-        'http://localhost:9312/properties/api.json',
+        'http://scrapybook.s3.amazonaws.com/api.json',
     )
 
     # Format the URLs based on the API call response
     def parse(self, response):
-        base_url = "http://localhost:9312/properties/"
-        js = json.loads(response.body)
+        base_url = "http://scrapybook.s3.amazonaws.com/properties/"
+        js = json.loads(response.body.decode('utf-8'))
         for item in js:
             id = item["id"]
             title = item["title"]
@@ -32,7 +32,7 @@ class ApiSpider(scrapy.Spider):
     def parse_item(self, response):
         """ This function parses a property page.
 
-        @url http://localhost:9312/properties/property_000000.html
+        @url http://scrapybook.s3.amazonaws.com/properties/property_000000.html
         @returns items 1
         @scrapes title price description address image_urls
         @scrapes url project spider server date
