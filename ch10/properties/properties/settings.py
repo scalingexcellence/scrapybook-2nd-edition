@@ -15,12 +15,9 @@ NEWSPIDER_MODULE = 'properties.spiders'
 # the user-agent
 #USER_AGENT = 'properties (+http://www.yourdomain.com)'
 
-ITEM_PIPELINES = {
-    'properties.pipelines.tidyup.TidyUp': 100,
-}
-
-EXTENSIONS = {'properties.latencies.Latencies': 500}
-LATENCIES_INTERVAL = 5
+ITEM_PIPELINES = {'scrapy.pipelines.images.ImagesPipeline': 1}
+IMAGES_STORE = 'images'
+IMAGES_THUMBS = {'small': (30, 30)}
 
 COMMANDS_MODULE = 'properties.hi'
 

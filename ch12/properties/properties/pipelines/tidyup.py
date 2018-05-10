@@ -9,6 +9,6 @@ class TidyUp(object):
         Pipeline's main method. Formats the date as a string.
         """
 
-        item['date'] = [datetime.isoformat(i) for i in item['date']]
+        item['date'] = map(datetime.isoformat, item['date'])
 
         return item
