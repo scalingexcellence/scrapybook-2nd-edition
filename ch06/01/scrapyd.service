@@ -1,0 +1,12 @@
+[Unit]
+Description=Scrapyd service
+After=network.target
+
+[Service]
+User=ec2-user
+Group=ec2-user
+WorkingDirectory=/home/ec2-user/environment/scrapybook-2nd-edition/ch06/01
+ExecStart=/home/ec2-user/.local/bin/scrapyd
+
+[Install]
+WantedBy=multi-user.target

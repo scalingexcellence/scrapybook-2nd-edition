@@ -1,0 +1,8 @@
+dbs
+eggs
+logs
+simple/build
+simple/logs
+simple/setup.py
+twistd.pid
+
