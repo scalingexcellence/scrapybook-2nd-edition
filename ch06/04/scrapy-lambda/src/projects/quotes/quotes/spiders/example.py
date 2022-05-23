@@ -11,8 +11,10 @@ import scrapy
 #       "example",
 #       "-L",
 #       "INFO",
-#     "-a",
-#     "category=inspirational"
+#       "-a",
+#       "category=inspirational",
+#       "-o",
+#       "s3://<bucket name>/%(name)s-inspirational-%(time)s.jl:jl"
 #     ]
 #   }
 # }
