@@ -1,0 +1,3 @@
+boto3
+scrapy
+scrapy-demo-cloudwatch-log
