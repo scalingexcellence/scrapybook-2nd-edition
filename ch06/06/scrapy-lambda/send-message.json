@@ -1,0 +1,18 @@
+{
+  "queryStringParameters": {
+    "project": "quotes"
+  },
+  "multiValueQueryStringParameters": {
+    "args": [
+      "scrapy",
+      "crawl",
+      "example",
+      "-L",
+      "INFO",
+      "-a",
+      "category=inspirational",
+      "-o",
+      "s3://<bucket name>/%(name)s-inspirational-from-sqs-%(time)s.jl:jl"
+    ]
+  }
+}
