@@ -17,6 +17,17 @@ Resources:
           Properties:
             Path: /scrape
             Method: get
+        CWSchedule:
+          Type: Schedule
+          Properties:
+            Schedule: 'rate(1 minute)'
+            Input: >-
+              {
+                "queryStringParameters": {"project": "simple"},
+                "multiValueQueryStringParameters": {
+                  "args": ["scrapy", "crawl", "example", "-L", "INFO"]
+                }
+              }
       Environment:
         Variables:
           DESTINATION_BUCKET: !Ref DestinationBucket
